@@ -5,16 +5,26 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #2c3e50;
+    background-color: #2c3e50; /* Tu color de fondo */
     touch-action: none;
+    font-family: Arial, sans-serif; /* Añadido para el texto de las pantallas */
+    color: #eee; /* Añadido para el color de texto de las pantallas */
 }
 
 .game-container {
     position: relative;
     width: 90vw;
-    max-width: 400px;
+    max-width: 400px; /* Tu ancho máximo */
     margin: 0 auto;
     padding: 20px;
+    background-color: #333; /* Color de fondo para el contenedor del juego */
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    overflow: hidden; /* Importante para contener los overlays */
+    display: flex; /* Para organizar score-board y game-play-area/overlays */
+    flex-direction: column;
+    align-items: center;
 }
 
 #gameCanvas {
@@ -24,6 +34,7 @@ body {
     width: 100%;
     height: auto;
     margin: 0 auto;
+    border: 2px solid #555; /* Borde para el canvas */
 }
 
 .score-board {
@@ -32,15 +43,21 @@ body {
     justify-content: space-between;
     padding: 10px;
     font-family: Arial, sans-serif;
+    width: 100%; /* Para que ocupe todo el ancho del contenedor */
+    margin-bottom: 15px; /* Espacio debajo del marcador */
+    font-size: 1.2em; /* Tamaño de fuente ajustado para mejor visibilidad */
 }
 
 /* Estilos para controles móviles */
 .mobile-controls {
-    display: none; /* Oculto por defecto */
+    display: none; /* Oculto por defecto, se muestra con media query */
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     margin-top: 20px;
     padding: 10px;
+    width: 180px; /* Ancho específico para los controles */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .control-btn {
@@ -55,6 +72,7 @@ body {
     -webkit-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.2s; /* Transición para el hover/active */
 }
 
 .control-btn:active {
@@ -70,7 +88,7 @@ body {
 /* Media queries para dispositivos móviles */
 @media (max-width: 768px) {
     .mobile-controls {
-        display: grid;
+        display: grid; /* Mostrar en pantallas pequeñas */
     }
     
     .game-container {
@@ -80,4 +98,70 @@ body {
     .score-board {
         font-size: 14px;
     }
+}
+
+/* --- Nuevos estilos para las pantallas de inicio/fin y botones --- */
+
+.game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Fondo semitransparente oscuro */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.5em;
+    z-index: 10; /* Asegura que esté por encima del canvas */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.game-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.game-overlay h1, .game-overlay h2 {
+    margin-bottom: 10px;
+    color: white;
+}
+
+.game-overlay p {
+    margin-top: 0;
+    font-size: 0.8em;
+}
+
+.game-button {
+    background-color: #4CAF50; /* Verde vibrante */
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 25px; /* Espacio sobre el botón */
+    transition: background-color 0.2s;
+}
+
+.game-button:hover {
+    background-color: #45a049; /* Verde ligeramente más oscuro al pasar el ratón */
+}
+
+/* Ocultar el área de juego por defecto y mostrarla cuando esté activa */
+.game-play-area {
+    display: none; /* Oculto por defecto */
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    /* Posición relativa puede ser útil si hay otros elementos superpuestos */
+    position: relative; 
+}
+
+.game-play-area.active {
+    display: flex; /* Mostrar cuando el juego esté activo */
 }

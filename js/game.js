@@ -1,20 +1,26 @@
-// Asegúrate de que este es el contenido actual de tu game.js
-// y que el resto de tu lógica del juego (movimiento, comida, colisiones) está aquí.
-
 // --- Variables y configuración inicial ---
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
 const highScoreDisplay = document.getElementById('highScore');
 
-const gridSize = 20; // Tamaño de cada segmento de la serpiente
-let snake; // Se inicializa en startGame()
-let food;  // Se inicializa en generateFood()
-let direction; // Se inicializa en startGame()
-let score; // Se inicializa en startGame()
-let highScore = localStorage.getItem('snakeHighScore') || 0; // Carga la puntuación más alta desde localStorage
+// Nuevos elementos HTML
+const startScreen = document.getElementById('startScreen');
+const startButton = document.getElementById('startButton');
+const gameOverScreen = document.getElementById('gameOverScreen');
+const finalScoreDisplay = document.getElementById('finalScore');
+const restartButton = document.getElementById('restartButton');
+const gamePlayArea = document.getElementById('gamePlayArea'); // Nuevo contenedor para el juego
+
+const gridSize = 20;
+let snake;
+let food;
+let direction;
+let score;
+let highScore = localStorage.getItem('snakeHighScore') || 0;
 let gameInterval;
-let gameSpeed = 150; // Velocidad del juego en milisegundos
+let gameSpeed = 150;
+let gameStarted = false; // Nueva variable para controlar el estado del juego
 
 // Actualizar la visualización de la puntuación más alta al inicio
 highScoreDisplay.textContent = highScore;
@@ -27,27 +33,24 @@ function generateFood() {
         x: Math.floor(Math.random() * (canvas.width / gridSize)),
         y: Math.floor(Math.random() * (canvas.height / gridSize))
     };
-    // Asegurarse de que la comida no aparezca dentro de la serpiente
     for (let i = 0; i < snake.length; i++) {
         if (food.x === snake[i].x && food.y === snake[i].y) {
-            generateFood(); // Regenerar si la comida está en la serpiente
+            generateFood();
             return;
         }
     }
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Dibujar serpiente
     for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = (i === 0) ? 'green' : 'lime'; // Cabeza verde, cuerpo lima
+        ctx.fillStyle = (i === 0) ? 'green' : 'lime';
         ctx.strokeStyle = 'darkgreen';
         ctx.fillRect(snake[i].x * gridSize, snake[i].y * gridSize, gridSize, gridSize);
         ctx.strokeRect(snake[i].x * gridSize, snake[i].y * gridSize, gridSize, gridSize);
     }
 
-    // Dibujar comida
     ctx.fillStyle = 'red';
     ctx.strokeStyle = 'darkred';
     ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
@@ -55,9 +58,10 @@ function draw() {
 }
 
 function update() {
+    if (!gameStarted) return; // No actualizar si el juego no ha iniciado
+
     const head = { x: snake[0].x, y: snake[0].y };
 
-    // Mover la cabeza
     switch (direction) {
         case 'up':
             head.y--;
@@ -73,7 +77,6 @@ function update() {
             break;
     }
 
-    // Comprobar colisiones
     if (
         head.x < 0 ||
         head.x >= canvas.width / gridSize ||
@@ -85,19 +88,14 @@ function update() {
         return;
     }
 
-    snake.unshift(head); // Añadir nueva cabeza
+    snake.unshift(head);
 
-    // Comprobar si come la comida
     if (head.x === food.x && head.y === food.y) {
         score += 10;
         scoreDisplay.textContent = score;
         generateFood();
-        // Opcional: Aumentar ligeramente la velocidad a medida que crece la serpiente
-        // gameSpeed = Math.max(50, gameSpeed - 5);
-        // clearInterval(gameInterval);
-        // gameInterval = setInterval(update, gameSpeed);
     } else {
-        snake.pop(); // Eliminar la cola si no come
+        snake.pop();
     }
 
     draw();
@@ -114,23 +112,27 @@ function checkCollision(head) {
 
 function endGame() {
     clearInterval(gameInterval);
-    alert('¡Fin del juego! Tu puntuación: ' + score);
+    gameStarted = false; // El juego ha terminado
+
+    // Mostrar pantalla de Game Over y ocultar área de juego
+    gamePlayArea.classList.remove('active');
+    gameOverScreen.classList.add('active');
+    finalScoreDisplay.textContent = score; // Muestra la puntuación final
 
     // Guardar la puntuación más alta si la actual es mayor
     if (score > highScore) {
         highScore = score;
-        localStorage.setItem('snakeHighScore', highScore); // Guarda en localStorage
+        localStorage.setItem('snakeHighScore', highScore);
         highScoreDisplay.textContent = highScore;
         highScoreDisplay.dataset.highScore = highScore;
     }
-
-    // Reiniciar el juego después de un breve retraso o interacción
-    // Para reiniciar automáticamente, llama a startGame()
-    startGame();
 }
 
 // --- Controles de teclado y táctiles ---
 document.addEventListener('keydown', e => {
+    // Solo permitir control si el juego ha iniciado
+    if (!gameStarted) return; 
+
     switch (e.key) {
         case 'ArrowUp':
             if (direction !== 'down') direction = 'up';
@@ -147,8 +149,10 @@ document.addEventListener('keydown', e => {
     }
 });
 
-// Función para manejar los controles táctiles (llamada desde index.html)
 function handleSwipe(newDirection) {
+    // Solo permitir control si el juego ha iniciado
+    if (!gameStarted) return; 
+
     switch (newDirection) {
         case 'up':
             if (direction !== 'down') direction = 'up';
@@ -167,27 +171,37 @@ function handleSwipe(newDirection) {
 
 // --- Función para iniciar o reiniciar el juego ---
 function startGame() {
-    // Configurar dimensiones del canvas (asegúrate de que estas estén aquí o en tu CSS)
-    canvas.width = 400; // Puedes ajustar el tamaño del canvas
-    canvas.height = 400; // Puedes ajustar el tamaño del canvas
+    // Ocultar pantallas de inicio/fin y mostrar área de juego
+    startScreen.classList.remove('active');
+    gameOverScreen.classList.remove('active');
+    gamePlayArea.classList.add('active');
+
+    // Configurar dimensiones del canvas
+    canvas.width = 400;
+    canvas.height = 400;
 
     // Inicializar las variables del juego
-    snake = [{ x: 10, y: 10 }]; // Posición inicial de la serpiente
+    snake = [{ x: 10, y: 10 }];
     direction = 'right';
     score = 0;
-    scoreDisplay.textContent = score; // Asegúrate de que el score se reinicie visualmente
+    scoreDisplay.textContent = score;
 
-    generateFood(); // Generar la primera comida
-    draw(); // Dibujar el estado inicial del juego
+    generateFood();
+    draw(); // Dibuja el estado inicial (serpiente y comida)
 
-    // Limpiar cualquier intervalo anterior para evitar múltiples bucles de juego
+    // Limpiar cualquier intervalo anterior
     if (gameInterval) {
         clearInterval(gameInterval);
     }
-    gameInterval = setInterval(update, gameSpeed); // Iniciar el bucle principal del juego
+    gameInterval = setInterval(update, gameSpeed); // Iniciar el bucle principal
+
+    gameStarted = true; // Establecer el estado del juego a iniciado
 }
 
-// --- Inicio del juego cuando la página se carga ---
-// Llama a startGame() para iniciar el juego automáticamente.
-// Asegúrate de que esta llamada está al final del script.
-startGame();
+// --- Event Listeners para los botones ---
+startButton.addEventListener('click', startGame);
+restartButton.addEventListener('click', startGame);
+
+// --- Inicialización al cargar la página ---
+// No llamamos a startGame() aquí. La pantalla de inicio se mostrará por defecto.
+// La primera vez que se carga la página, gameStarted es false, y se espera el clic del botón.

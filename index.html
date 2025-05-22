@@ -15,13 +15,26 @@
             <span>High Score: <span id="highScore" data-highscore="0">0</span></span>
         </div>
         
-        <canvas id="gameCanvas"></canvas>
-        
-        <div class="mobile-controls">
-            <button class="control-btn up" onclick="handleSwipe('up')">&#9650;</button>
-            <button class="control-btn left" onclick="handleSwipe('left')">&#9668;</button>
-            <button class="control-btn right" onclick="handleSwipe('right')">&#9658;</button>
-            <button class="control-btn down" onclick="handleSwipe('down')">&#9660;</button>
+        <div id="startScreen" class="game-overlay active">
+            <h1>Snake Game</h1>
+            <button id="startButton" class="game-button">Iniciar Juego</button>
+        </div>
+
+        <div id="gameOverScreen" class="game-overlay">
+            <h2>Game Over</h2>
+            <p>Tu puntuación: <span id="finalScore">0</span></p>
+            <button id="restartButton" class="game-button">Jugar de Nuevo</button>
+        </div>
+
+        <div id="gamePlayArea" class="game-play-area">
+            <canvas id="gameCanvas"></canvas>
+            
+            <div class="mobile-controls">
+                <button class="control-btn up" onclick="handleSwipe('up')">&#9650;</button>
+                <button class="control-btn left" onclick="handleSwipe('left')">&#9668;</button>
+                <button class="control-btn right" onclick="handleSwipe('right')">&#9658;</button>
+                <button class="control-btn down" onclick="handleSwipe('down')">&#9660;</button>
+            </div>
         </div>
     </div>
     
