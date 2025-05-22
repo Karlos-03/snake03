@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="score-board">
+            <span>Score: <span id="score">0</span></span>
+            <span>High Score: <span id="highScore" data-highscore="0">0</span></span>
+        </div>
+        
+        <canvas id="gameCanvas"></canvas>
+        
+        <div class="mobile-controls">
+            <button class="control-btn up" onclick="handleSwipe('up')">&#9650;</button>
+            <button class="control-btn left" onclick="handleSwipe('left')">&#9668;</button>
+            <button class="control-btn right" onclick="handleSwipe('right')">&#9658;</button>
+            <button class="control-btn down" onclick="handleSwipe('down')">&#9660;</button>
+        </div>
+    </div>
+    
+    <script src="./js/game.js"></script>
+</body>
+</html>

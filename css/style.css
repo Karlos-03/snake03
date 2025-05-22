@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #2c3e50;
+    touch-action: none;
+}
+
+.game-container {
+    position: relative;
+    width: 90vw;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#gameCanvas {
+    background-color: #34495e;
+    touch-action: none;
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+
+.score-board {
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilos para controles móviles */
+.mobile-controls {
+    display: none; /* Oculto por defecto */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.control-btn {
+    touch-action: manipulation;
+    padding: 20px;
+    font-size: 24px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(52, 152, 219, 0.7);
+    color: white;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.control-btn:active {
+    background-color: rgba(41, 128, 185, 0.9);
+}
+
+.up { grid-column: 2 / 3; }
+.left { grid-column: 1 / 2; }
+.right { grid-column: 3 / 4; }
+.down { grid-column: 2 / 3; }
+
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: grid;
+    }
+    
+    .game-container {
+        padding: 10px;
+    }
+    
+    .score-board {
+        font-size: 14px;
+    }
+}
