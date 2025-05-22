@@ -12,7 +12,7 @@ body {
 }
 
 .game-container {
-    position: relative;
+    position: relative; /* Muy importante para que los overlays se posicionen respecto a él */
     width: 90vw;
     max-width: 400px; /* Tu ancho máximo */
     margin: 0 auto;
@@ -21,10 +21,13 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     text-align: center;
-    overflow: hidden; /* Importante para contener los overlays */
-    display: flex; /* Para organizar score-board y game-play-area/overlays */
+    overflow: hidden; /* Muy importante para contener los overlays dentro de sus límites */
+    /* Estas propiedades son para el diseño flexbox general del contenedor */
+    display: flex; 
     flex-direction: column;
     align-items: center;
+    /* Ajusta la altura si es necesario para que el contenido quepa, o usa min-height */
+    min-height: 480px; /* Ejemplo: 400px de canvas + padding + score-board + controles */
 }
 
 #gameCanvas {
@@ -46,6 +49,8 @@ body {
     width: 100%; /* Para que ocupe todo el ancho del contenedor */
     margin-bottom: 15px; /* Espacio debajo del marcador */
     font-size: 1.2em; /* Tamaño de fuente ajustado para mejor visibilidad */
+    z-index: 1; /* Asegura que esté por encima del canvas pero debajo del overlay */
+    position: relative; /* Necesario para que z-index funcione */
 }
 
 /* Estilos para controles móviles */
@@ -103,22 +108,24 @@ body {
 /* --- Nuevos estilos para las pantallas de inicio/fin y botones --- */
 
 .game-overlay {
-    position: absolute;
+    position: absolute; /* Importante: Posicionamiento absoluto respecto al game-container */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fondo semitransparente oscuro */
+    background-color: rgba(0, 0, 0, 0.9); /* Fondo más oscuro y opaco */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     color: white;
     font-size: 1.5em;
-    z-index: 10; /* Asegura que esté por encima del canvas */
+    z-index: 20; /* Mayor z-index para que esté por encima de todo */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    padding: 20px; /* Añadido para que el contenido no pegue a los bordes */
+    box-sizing: border-box; /* Para incluir padding en el width/height */
 }
 
 .game-overlay.active {
@@ -129,11 +136,13 @@ body {
 .game-overlay h1, .game-overlay h2 {
     margin-bottom: 10px;
     color: white;
+    text-align: center; /* Centrar el texto en el overlay */
 }
 
 .game-overlay p {
     margin-top: 0;
     font-size: 0.8em;
+    text-align: center; /* Centrar el texto en el overlay */
 }
 
 .game-button {
@@ -158,8 +167,9 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    /* Posición relativa puede ser útil si hay otros elementos superpuestos */
+    /* Posición relativa para que los elementos internos respeten su flujo */
     position: relative; 
+    /* El margen superior del score-board ya maneja el espacio */
 }
 
 .game-play-area.active {
